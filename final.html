@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+    Select a file: <input type="file" id="myFile">
+    <button onclick='Upload()'>Process</button>
+    <table id="myTable"></table>
+
+    <script type="text/javascript">
+
+            function Upload() {
+            var fileSize = 0;
+            //get file
+            var theFile = document.getElementById("myFile");
+
+            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+            
+            //checking if the file is csv or not
+
+            if (regex.test(theFile.value.toLowerCase())) {
+
+               //checking if browser supports FileReader or not
+
+               if (typeof(FileReader) != "undefined") {
+
+               //then get an element table
+
+               var table = document.getElementById("myTable");
+               var headerLine = "";
+
+               //creating html object -> FileReader
+
+               var reader = new FileReader();
+
+               //calling FileReader.onload function 
+               //onload event occurs when an object has been loaded
+               //for now my FileReader is reader
+
+               reader.onload = function(e) {
+                   //e refers event being passed by an object in that function
+
+                   var content = reader.result;
+
+                   //splitting csv file using "\n" for each row
+              
+                   var lines = content.split("\r");
+
+                   //looping all rows
+
+                   for (var i = 0; i< lines.length; i++) {
+
+                   //creating a tr element
+
+                   var row = document.createElement("tr");
+
+                   //splitting content of each row
+
+                   var rowData = lines[i].split(",");
+
+                   //looping throw all columns of a row
+
+                   for (var j = 0; j < rowData.length; j++) {
+
+                        //creating td element 
+                        
+                        var cellElement = document.createElement("td");
+                        if (i == 0) {
+                             cellElement = document.createElement("th");
+                        } else {
+                             cellElement = document.createElement("td");
+                        }
+                        
+                        //adding a new row element as a node for table using appendChild
+
+                        var cellData = document.createTextNode(rowData[j]);
+
+                        cellElement.appendChild(cellData);
+
+                        //adding row child using appendChild
+
+                        row.appendChild(cellElement);
+                   }
+                   //append table data or contents
+
+                   myTable.appendChild(row);
+                }
+              }
+              //call file reader onload
+              reader.readAsText(theFile.files[0]);
+             } else {
+                 alert("This browser does not support HTML5.");
+             }
+
+          } else {
+             alert("Please upload a valid CSV file.");
+          }
+          return false;
+        }
+
+        // document.getElementById('fetch').onclick=function(){
+        //     var rows = document.getElementById('rows').value
+        //     var cols = document.getElementById('cols').value
+        //     if(rows == "" || rows == null)
+        //     rows = 5
+        //     if(cols == "" || cols == null)
+        //     cols = 5
+        //     var output = '<table border="2" cellspacing="1" cellpadding="8" class="table">'
+
+        //     function createTable(rows, cols){
+        //         for(var i=1; i<=rows; i++){
+        //             output = output + '<tr>'
+        //             for(var j=1; j<=cols; j++){
+        //                 output = output + '<td>' + '<input class="input" type="text" placeholder="input data">' + '</td>'
+        //             }
+        //             output = output + '</tr>'
+        //         }
+        //         output = output + '</table>'
+        //         document.getElementById('container').innerHTML = output
+        //     }
+        //     createTable(rows, cols)
+        // }
+        var csvFileData = [
+            ['zita', 2002],
+            ['zite', 2003],
+            ['zito', 2004],
+            ['zitu', 2003],
+            ['ziti', 2003]
+        ];  
+    
+        //create a user-defined function to download CSV file   
+        function download_csv_file() {  
+  
+        //define the heading for each row of the data  
+        var csv = 'Name, year\n';  
+      
+        //merge the data with CSV  
+        csvFileData.forEach(function(row) {  
+            csv += row.join(',');  
+            csv += "\n";  
+        });  
+   
+        //display the created CSV data on the web browser   
+        document.write(csv);  
+  
+     
+        var hiddenElement = document.createElement('a');  
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);  
+        hiddenElement.target = '_blank';  
+      
+        //provide the name for the CSV file to be downloaded  
+        hiddenElement.download = 'zita.csv';  
+        hiddenElement.click();  
+        }  
+    </script>
+
+    <h3> Click the button to download the CSV file </h3>
+
+    <!-- create an HTML button to download the CSV file on click -->
+    <button onclick="download_csv_file()"> Download CSV </button>
+
+
+</body>
+</html>
